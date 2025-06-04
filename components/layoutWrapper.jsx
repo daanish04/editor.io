@@ -7,7 +7,7 @@ export default function LayoutWrapper({ children }) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
 
-  const autoCollapsedRoutes = ["/signin", "/signup"];
+  const autoCollapsedRoutes = ["/signin", "/signup", "/code", "/markdown"];
 
   useEffect(() => {
     const shouldCollapse = autoCollapsedRoutes.some((route) =>

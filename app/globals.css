@@ -126,3 +126,8 @@
   --color-secondary: #1a4d99;
   --color-accent: #3881f0;
 }
+
+.cl-userButtonAvatarBox {
+  width: 35px;
+  height: 35px;
+}

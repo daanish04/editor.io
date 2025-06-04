@@ -8,43 +8,51 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import Link from "next/link";
 
 export default function Sidebar({ collapsed, setCollapsed }) {
   const navItems = [
-    { icon: <FaCode size={22} />, label: "Code" },
-    { icon: <IoDocumentText size={22} />, label: "Markdown" },
-    { icon: <FiSave size={22} />, label: "Saved" },
+    { icon: <FaCode size={22} />, label: "Code", path: "/code" },
+    {
+      icon: <IoDocumentText size={22} />,
+      label: "Markdown",
+      path: "/markdown",
+    },
+    { icon: <FiSave size={22} />, label: "Saved", path: "/saved" },
   ];
 
   const settingsItem = {
     icon: <IoSettingsSharp size={22} />,
     label: "Settings",
+    path: "/settings",
   };
 
   const renderNavItem = (item, index) => (
-    <TooltipProvider key={index}>
-      <Tooltip side="right" delayDuration={200}>
-        <TooltipTrigger asChild>
-          <div className="flex items-center gap-2 px-2 py-2 hover:bg-blue-950 rounded-md cursor-pointer transition-colors group">
-            <div className="w-6 h-6 flex items-center justify-center text-white">
-              {item.icon}
-            </div>
-            <span
-              className={`overflow-hidden transition-all duration-300 ease-in-out origin-left
+    <Link href={item.path} key={index}>
+      <TooltipProvider key={index}>
+        <Tooltip side="right" delayDuration={200}>
+          <TooltipTrigger asChild>
+            <div className="flex items-center gap-2 px-2 py-2 hover:bg-blue-950 rounded-md cursor-pointer transition-colors group">
+              <div className="w-6 h-6 flex items-center justify-center text-white">
+                {item.icon}
+              </div>
+              <span
+                className={`overflow-hidden transition-all duration-300 ease-in-out origin-left
                 ${collapsed ? "w-0 opacity-0" : "w-auto opacity-100"} 
                 group-hover:opacity-100 whitespace-nowrap`}
-            >
-              {item.label}
-            </span>
-          </div>
-        </TooltipTrigger>
-        {collapsed && (
-          <TooltipContent side="right">
-            <p>{item.label}</p>
-          </TooltipContent>
-        )}
-      </Tooltip>
-    </TooltipProvider>
+              >
+                {item.label}
+              </span>
+            </div>
+          </TooltipTrigger>
+          {collapsed && (
+            <TooltipContent side="right">
+              <p>{item.label}</p>
+            </TooltipContent>
+          )}
+        </Tooltip>
+      </TooltipProvider>
+    </Link>
   );
 
   return (

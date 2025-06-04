@@ -3,7 +3,6 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark, shadesOfPurple } from "@clerk/themes";
 import Header from "@/components/header";
-import Sidebar from "@/components/sidebar";
 import LayoutWrapper from "@/components/layoutWrapper";
 
 const inter = Inter({
