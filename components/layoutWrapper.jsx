@@ -5,7 +5,7 @@ import Sidebar from "./sidebar";
 
 export default function LayoutWrapper({ children }) {
   const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
 
   const autoCollapsedRoutes = ["/signin", "/signup", "/code", "/markdown"];
 

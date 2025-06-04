@@ -8,8 +8,8 @@ const Header = async () => {
   await checkUser();
   return (
     <div className="fixed w-full flex justify-between items-center py-5 md:px-10 p-6 text-cream bg-dusk border-b border-cyan-400 z-100">
-      <Link href="/" className="text-3xl font-bold ">
-        Editor.io
+      <Link href="/" className="text-4xl font-bold ">
+        Editor.<span className="text-accent">io</span>
       </Link>
       <div className="flex items-center justify-around gap-3">
         <span>
