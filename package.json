@@ -18,6 +18,7 @@
     "@codemirror/state": "^6.5.2",
     "@codemirror/view": "^6.37.1",
     "@prisma/client": "^6.9.0",
+    "@radix-ui/react-dropdown-menu": "^2.1.15",
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-tooltip": "^1.2.7",
     "@uiw/react-codemirror": "^4.23.12",

@@ -12,10 +12,12 @@ export default function Home() {
     <div className=" bg-dusk text-cream px-6 py-12 flex flex-col items-center">
       {/* Hero Section */}
       <section className="max-w-4xl text-center space-y-4">
-        <h1 className="text-7xl font-bold tracking-tight">
+        <h1 className="text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight lg:pb-3">
           Editor.<span className="text-accent">io</span>
         </h1>
-        <p className="text-xl text-cream">Code smart. Document beautifully.</p>
+        <p className="text-xl text-white md:pb-2">
+          Code smart. Document beautifully.
+        </p>
         <div className="mt-6 flex justify-center gap-4">
           <Button asChild className="bg-accent hover:bg-accent/70 text-white">
             <Link href="/code">Open Code Editor</Link>

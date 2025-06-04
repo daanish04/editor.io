@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import CodeMirror from "@uiw/react-codemirror";
 import { html } from "@codemirror/lang-html";
 import { css } from "@codemirror/lang-css";
 import { javascript } from "@codemirror/lang-javascript";
@@ -9,8 +8,17 @@ import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { GrDrag } from "react-icons/gr";
 import { FaHtml5, FaCss3Alt } from "react-icons/fa";
 import { RiJavascriptFill } from "react-icons/ri";
+import { MdRefresh } from "react-icons/md";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import EditorSection from "./_components/editorSection";
 
 export default function CodePage() {
+  const [layoutKey, setLayoutKey] = useState(0);
   const [htmlCode, setHtmlCode] = useState(`<h1>
     Welcome to Editor.io
 </h1>`);
@@ -36,14 +44,59 @@ export default function CodePage() {
           <script>${jsCode}</script>
         </html>
       `);
-    }, 250);
+    }, 300);
 
     return () => clearTimeout(timeout);
   }, [htmlCode, cssCode, jsCode]);
 
+  const handleScreenReset = () => {
+    localStorage.setItem(
+      "react-resizable-panels:layout-hor",
+      `{"{\"defaultSize\":30,\"minSize\":25},{\"defaultSize\":30,\"minSize\":25},{\"defaultSize\":30,\"minSize\":25}":{"expandToSizes":{},"layout":[33.3333333334,33.3333333333,33.3333333333]}}`
+    );
+    localStorage.setItem(
+      "react-resizable-panels:layout-vert",
+      `{"{\"defaultSize\":40,\"minSize\":20},{\"defaultSize\":60,\"minSize\":20}":{"expandToSizes":{},"layout":[60,40]}}`
+    );
+
+    setLayoutKey((prev) => prev + 1);
+  };
+
+  const handleCodeReset = () => {
+    setHtmlCode(`<h1>
+    Welcome to Editor.io
+</h1>`);
+    setCssCode(`body {
+    color: #17131a;
+    text-align: center;
+}`);
+    setJsCode(`console.log("Welcome to Editor.io!");`);
+  };
+
   return (
     <div className="h-[calc(100vh-5rem)] font-mono text-cream pt-2 px-4 bg-gray-950">
-      <PanelGroup direction="vertical" autoSaveId="layout-vert">
+      <div className="absolute right-5 top-24 text-cream z-50">
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <MdRefresh size={24} className="bg-none text-cream" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="min-w-22 bg-dusk/70 text-primary">
+            <DropdownMenuItem
+              className="hover:bg-dusk"
+              onSelect={handleScreenReset}
+            >
+              Screens
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="hover:bg-dusk"
+              onSelect={handleCodeReset}
+            >
+              Code
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+      <PanelGroup key={layoutKey} direction="vertical" autoSaveId="layout-vert">
         <Panel defaultSize={60} minSize={20}>
           <PanelGroup direction="horizontal" autoSaveId="layout-hor">
             <Panel defaultSize={30} minSize={25} className="rounded ">
@@ -55,7 +108,7 @@ export default function CodePage() {
                 extension={html()}
               />
             </Panel>
-            <PanelResizeHandle className="flex justify-center items-center">
+            <PanelResizeHandle className="bg-primary/5 rounded-t-md flex justify-center items-center">
               <GrDrag className="text-primary/80" />
             </PanelResizeHandle>
             <Panel defaultSize={30} minSize={25} className="rounded">
@@ -67,7 +120,7 @@ export default function CodePage() {
                 extension={css()}
               />
             </Panel>
-            <PanelResizeHandle className="flex justify-center items-center">
+            <PanelResizeHandle className="bg-primary/5 rounded-t-md flex justify-center items-center">
               <GrDrag className="text-primary/80" />
             </PanelResizeHandle>
             <Panel defaultSize={30} minSize={25} className=" rounded">
@@ -81,7 +134,7 @@ export default function CodePage() {
             </Panel>
           </PanelGroup>
         </Panel>
-        <PanelResizeHandle className="flex justify-center items-center">
+        <PanelResizeHandle className="bg-primary/5 rounded-t-md flex justify-center items-center">
           <GrDrag className="text-primary/80 transform rotate-90" />
         </PanelResizeHandle>
         <Panel defaultSize={40} minSize={20} className="bg-white">
@@ -93,44 +146,6 @@ export default function CodePage() {
           />
         </Panel>
       </PanelGroup>
-    </div>
-  );
-}
-
-function EditorSection({ icon, title, value, onChange, extension }) {
-  return (
-    <div className="pt-1">
-      <div className="relative flex items-center gap-2 mb-2 text-lg ml-3 z-10 font-semibold text-gray-300">
-        {icon} {title}
-        <HeadLines title={title} />
-      </div>
-      <CodeMirror
-        value={value}
-        onChange={(val) => onChange(val)}
-        extensions={[extension]}
-        height="360px"
-        theme="dark"
-        basicSetup={{ lineNumbers: true, lineWrapping: true }}
-      />
-    </div>
-  );
-}
-
-function HeadLines({ title }) {
-  return (
-    <div>
-      <div
-        className="absolute left-7 top-0.5 h-2 bg-primary/20 z-1"
-        style={{ width: `${title.length * 0.7}rem` }}
-      ></div>
-      <div
-        className="absolute left-8 top-2.5 h-2 bg-primary/20 z-1"
-        style={{ width: `${title.length * 0.7}rem` }}
-      ></div>
-      <div
-        className="absolute left-9 top-4.5 h-2 bg-primary/20 z-1"
-        style={{ width: `${title.length * 0.7}rem` }}
-      ></div>
     </div>
   );
 }
