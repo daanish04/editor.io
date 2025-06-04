@@ -77,7 +77,7 @@ export default function CodePage() {
                 value={jsCode}
                 onChange={setJsCode}
                 extension={javascript()}
-              />{" "}
+              />
             </Panel>
           </PanelGroup>
         </Panel>
@@ -102,18 +102,7 @@ function EditorSection({ icon, title, value, onChange, extension }) {
     <div className="pt-1">
       <div className="relative flex items-center gap-2 mb-2 text-lg ml-3 z-10 font-semibold text-gray-300">
         {icon} {title}
-        <div
-          className="absolute left-7 top-0.5 h-2 bg-primary/20 z-1"
-          style={{ width: `${title.length * 0.7}rem` }}
-        ></div>
-        <div
-          className="absolute left-8 top-2.5 h-2 bg-primary/20 z-1"
-          style={{ width: `${title.length * 0.7}rem` }}
-        ></div>
-        <div
-          className="absolute left-9 top-4.5 h-2 bg-primary/20 z-1"
-          style={{ width: `${title.length * 0.7}rem` }}
-        ></div>
+        <HeadLines title={title} />
       </div>
       <CodeMirror
         value={value}
@@ -123,6 +112,25 @@ function EditorSection({ icon, title, value, onChange, extension }) {
         theme="dark"
         basicSetup={{ lineNumbers: true, lineWrapping: true }}
       />
+    </div>
+  );
+}
+
+function HeadLines({ title }) {
+  return (
+    <div>
+      <div
+        className="absolute left-7 top-0.5 h-2 bg-primary/20 z-1"
+        style={{ width: `${title.length * 0.7}rem` }}
+      ></div>
+      <div
+        className="absolute left-8 top-2.5 h-2 bg-primary/20 z-1"
+        style={{ width: `${title.length * 0.7}rem` }}
+      ></div>
+      <div
+        className="absolute left-9 top-4.5 h-2 bg-primary/20 z-1"
+        style={{ width: `${title.length * 0.7}rem` }}
+      ></div>
     </div>
   );
 }
