@@ -6,6 +6,7 @@ import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import "github-markdown-css/github-markdown.css";
+import MarkdownHeader from "./_components/markdownHeader";
 
 const MarkdownPage = () => {
   const [markdown, setMarkdown] = useState(`# Heading 1
@@ -87,60 +88,63 @@ echo "Shell script!"
   };
 
   return (
-    <div className="py-4 px-6 grid grid-cols-2 gap-4 h-full w-full">
-      {/* Editor Section */}
-      <div className="flex flex-col bg-slate-900 rounded-xl h-[calc(100vh-7rem)] overflow-hidden border border-slate-700">
-        <div className="text-cream text-xl font-semibold p-3 pl-5 border-b border-slate-700">
-          Editor
-        </div>
-        <textarea
-          ref={textareaRef}
-          value={markdown}
-          spellCheck={false}
-          onChange={(e) => setMarkdown(e.target.value)}
-          onScroll={handleEditorScroll}
-          className="flex-1 bg-slate-900 text-blue-100 p-4 resize-none 
+    <div>
+      <MarkdownHeader />
+      <div className="py-4 px-6 grid grid-cols-2 gap-4 h-full w-full">
+        {/* Editor Section */}
+        <div className="flex flex-col bg-slate-900 rounded-xl h-[calc(100vh-9.5rem)] overflow-hidden border border-slate-700">
+          <div className="text-cream text-xl font-semibold p-3 pl-5 border-b border-slate-700">
+            Editor
+          </div>
+          <textarea
+            ref={textareaRef}
+            value={markdown}
+            spellCheck={false}
+            onChange={(e) => setMarkdown(e.target.value)}
+            onScroll={handleEditorScroll}
+            className="flex-1 bg-slate-900 text-blue-100 p-4 resize-none 
                      overflow-auto outline-none scrollbar-thin 
                      scrollbar-thumb-slate-700 scrollbar-track-slate-800"
-        />
-      </div>
-
-      {/* Preview Section */}
-      <div className="flex flex-col bg-slate-900 rounded-xl h-[calc(100vh-7rem)] overflow-hidden border border-slate-700">
-        <div className="text-cream text-xl font-semibold p-3 pl-5 border-b border-slate-700">
-          Preview
+          />
         </div>
-        <div
-          ref={previewRef}
-          onScroll={handlePreviewScroll}
-          className="markdown-body flex-1 p-4 overflow-auto 
+
+        {/* Preview Section */}
+        <div className="flex flex-col bg-slate-900 rounded-xl h-[calc(100vh-9.5rem)] overflow-hidden border border-slate-700">
+          <div className="text-cream text-xl font-semibold p-3 pl-5 border-b border-slate-700">
+            Preview
+          </div>
+          <div
+            ref={previewRef}
+            onScroll={handlePreviewScroll}
+            className="markdown-body flex-1 p-4 overflow-auto 
                      scrollbar-thin scrollbar-thumb-slate-700 
                      scrollbar-track-slate-800"
-        >
-          <Markdown
-            remarkPlugins={[remarkGfm]}
-            components={{
-              code({ node, inline, className, children, ...props }) {
-                const match = /language-(\w+)/.exec(className || "");
-                return !inline && match ? (
-                  <SyntaxHighlighter
-                    style={oneDark}
-                    language={match[1]}
-                    PreTag="div"
-                    {...props}
-                  >
-                    {String(children).replace(/\n$/, "")}
-                  </SyntaxHighlighter>
-                ) : (
-                  <code className="text-orange-400 rounded px-1" {...props}>
-                    {children}
-                  </code>
-                );
-              },
-            }}
           >
-            {markdown}
-          </Markdown>
+            <Markdown
+              remarkPlugins={[remarkGfm]}
+              components={{
+                code({ node, inline, className, children, ...props }) {
+                  const match = /language-(\w+)/.exec(className || "");
+                  return !inline && match ? (
+                    <SyntaxHighlighter
+                      style={oneDark}
+                      language={match[1]}
+                      PreTag="div"
+                      {...props}
+                    >
+                      {String(children).replace(/\n$/, "")}
+                    </SyntaxHighlighter>
+                  ) : (
+                    <code className="text-orange-400 rounded px-1" {...props}>
+                      {children}
+                    </code>
+                  );
+                },
+              }}
+            >
+              {markdown}
+            </Markdown>
+          </div>
         </div>
       </div>
     </div>

@@ -16,6 +16,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import EditorSection from "./_components/editorSection";
+import { Button } from "@/components/ui/button";
+import CodeHeader from "./_components/codeHeader";
 
 export default function CodePage() {
   const [layoutKey, setLayoutKey] = useState(0);
@@ -74,78 +76,68 @@ export default function CodePage() {
   };
 
   return (
-    <div className="h-[calc(100vh-5rem)] font-mono text-cream pt-2 px-4 bg-gray-950">
-      <div className="absolute right-5 top-24 text-cream z-50">
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <MdRefresh size={24} className="bg-none text-cream" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="min-w-22 bg-dusk/70 text-primary">
-            <DropdownMenuItem
-              className="hover:bg-dusk"
-              onSelect={handleScreenReset}
-            >
-              Screens
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="hover:bg-dusk"
-              onSelect={handleCodeReset}
-            >
-              Code
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+    <div>
+      <CodeHeader
+        onResetScreen={handleScreenReset}
+        onResetCode={handleCodeReset}
+      />
+
+      <div className="h-[calc(100vh-7.5rem)] font-mono text-cream pt-2 px-4 bg-gray-950">
+        <PanelGroup
+          key={layoutKey}
+          direction="vertical"
+          autoSaveId="layout-vert"
+        >
+          <Panel defaultSize={60} minSize={20}>
+            <PanelGroup direction="horizontal" autoSaveId="layout-hor">
+              <Panel defaultSize={30} minSize={25} className="rounded ">
+                <EditorSection
+                  icon={<FaHtml5 className="text-red-500" />}
+                  title="HTML"
+                  value={htmlCode}
+                  onChange={setHtmlCode}
+                  extension={html()}
+                />
+              </Panel>
+              <PanelResizeHandle className="bg-primary/5 rounded-t-md flex justify-center items-center">
+                <GrDrag className="text-primary/80" />
+              </PanelResizeHandle>
+              <Panel defaultSize={30} minSize={25} className="rounded">
+                <EditorSection
+                  icon={<FaCss3Alt className="text-blue-500" />}
+                  title="CSS"
+                  value={cssCode}
+                  onChange={setCssCode}
+                  extension={css()}
+                />
+              </Panel>
+              <PanelResizeHandle className="bg-primary/5 rounded-t-md flex justify-center items-center">
+                <GrDrag className="text-primary/80" />
+              </PanelResizeHandle>
+              <Panel defaultSize={30} minSize={25} className=" rounded">
+                <EditorSection
+                  icon={<RiJavascriptFill className="text-yellow-500" />}
+                  title="JavaScript"
+                  value={jsCode}
+                  onChange={setJsCode}
+                  extension={javascript()}
+                />
+              </Panel>
+            </PanelGroup>
+          </Panel>
+          <PanelResizeHandle className="bg-primary/5 rounded-t-md flex justify-center items-center">
+            <GrDrag className="text-primary/80 transform rotate-90" />
+          </PanelResizeHandle>
+          <Panel defaultSize={40} minSize={20} className="bg-white">
+            <iframe
+              srcDoc={srcDoc}
+              title="Live Preview"
+              sandbox="allow-scripts"
+              className="w-full h-full border-0 bg-none"
+            />
+          </Panel>
+        </PanelGroup>
       </div>
-      <PanelGroup key={layoutKey} direction="vertical" autoSaveId="layout-vert">
-        <Panel defaultSize={60} minSize={20}>
-          <PanelGroup direction="horizontal" autoSaveId="layout-hor">
-            <Panel defaultSize={30} minSize={25} className="rounded ">
-              <EditorSection
-                icon={<FaHtml5 className="text-red-500" />}
-                title="HTML"
-                value={htmlCode}
-                onChange={setHtmlCode}
-                extension={html()}
-              />
-            </Panel>
-            <PanelResizeHandle className="bg-primary/5 rounded-t-md flex justify-center items-center">
-              <GrDrag className="text-primary/80" />
-            </PanelResizeHandle>
-            <Panel defaultSize={30} minSize={25} className="rounded">
-              <EditorSection
-                icon={<FaCss3Alt className="text-blue-500" />}
-                title="CSS"
-                value={cssCode}
-                onChange={setCssCode}
-                extension={css()}
-              />
-            </Panel>
-            <PanelResizeHandle className="bg-primary/5 rounded-t-md flex justify-center items-center">
-              <GrDrag className="text-primary/80" />
-            </PanelResizeHandle>
-            <Panel defaultSize={30} minSize={25} className=" rounded">
-              <EditorSection
-                icon={<RiJavascriptFill className="text-yellow-500" />}
-                title="JavaScript"
-                value={jsCode}
-                onChange={setJsCode}
-                extension={javascript()}
-              />
-            </Panel>
-          </PanelGroup>
-        </Panel>
-        <PanelResizeHandle className="bg-primary/5 rounded-t-md flex justify-center items-center">
-          <GrDrag className="text-primary/80 transform rotate-90" />
-        </PanelResizeHandle>
-        <Panel defaultSize={40} minSize={20} className="bg-white">
-          <iframe
-            srcDoc={srcDoc}
-            title="Live Preview"
-            sandbox="allow-scripts"
-            className="w-full h-full border-0 bg-none"
-          />
-        </Panel>
-      </PanelGroup>
     </div>
   );
 }
