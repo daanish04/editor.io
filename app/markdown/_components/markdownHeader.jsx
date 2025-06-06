@@ -33,7 +33,7 @@ const MarkdownHeader = ({ markdown, setMarkdown }) => {
     const file = e.target.files?.[0];
 
     if (!file || !file.name.endsWith(".md")) {
-      alert("Only markdown files are supported");
+      toast.error("Only Markdown files are supported.");
       return;
     }
     const text = await file.text();
