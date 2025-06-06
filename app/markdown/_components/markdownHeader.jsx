@@ -3,14 +3,16 @@ import { LuPencil } from "react-icons/lu";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import { FaCheck } from "react-icons/fa";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-const MarkdownHeader = ({}) => {
+const MarkdownHeader = ({ markdown, setMarkdown }) => {
   const [name, setName] = useState("Untitled");
   const [newName, setNewName] = useState(name);
   const [isEditing, setIsEditing] = useState(false);
+
+  const fileImportRef = useRef(null);
 
   const handleRename = () => {
     setName(newName);
@@ -20,6 +22,36 @@ const MarkdownHeader = ({}) => {
   const handleNameCancel = () => {
     setNewName(name);
     setIsEditing(false);
+  };
+
+  const handleImportClick = () => {
+    fileImportRef.current.click();
+  };
+
+  const handleFileImport = async (e) => {
+    const file = e.target.files?.[0];
+
+    if (!file || !file.name.endsWith(".md")) {
+      alert("Only markdown files are supported");
+      return;
+    }
+    const text = await file.text();
+
+    setMarkdown(text);
+  };
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(markdown);
+  };
+
+  const handleDownload = () => {
+    const blob = new Blob([markdown], { type: "text/markdown" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${name || "Untitled"}.md`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -77,18 +109,27 @@ const MarkdownHeader = ({}) => {
         </Button>
 
         {/* Import btn */}
+        <input
+          ref={fileImportRef}
+          type="file"
+          accept=".md"
+          onChange={handleFileImport}
+          className="hidden"
+        />
         <Button
           variant="outline"
           size="sm"
           className="px-2 bg-cream hover:bg-white"
+          onClick={handleImportClick}
         >
-          <span className="text-xs">Import(.txt)</span>
+          <span className="text-xs">Import(.md)</span>
         </Button>
         {/* Copy btn */}
         <Button
           variant="outline"
           size="sm"
           className="px-2 bg-cream hover:bg-white"
+          onClick={handleCopy}
         >
           <span className="text-xs">Copy</span>
         </Button>
@@ -98,6 +139,7 @@ const MarkdownHeader = ({}) => {
           variant="outline"
           size="sm"
           className="px-2 bg-cream hover:bg-white"
+          onClick={handleDownload}
         >
           <span className="text-xs">Download (.md)</span>
         </Button>

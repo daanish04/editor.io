@@ -89,7 +89,7 @@ echo "Shell script!"
 
   return (
     <div>
-      <MarkdownHeader />
+      <MarkdownHeader markdown={markdown} setMarkdown={setMarkdown} />
       <div className="py-4 px-6 grid grid-cols-2 gap-4 h-full w-full">
         {/* Editor Section */}
         <div className="flex flex-col bg-slate-900 rounded-xl h-[calc(100vh-9.5rem)] overflow-hidden border border-slate-700">
