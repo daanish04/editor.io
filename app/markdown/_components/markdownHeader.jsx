@@ -6,6 +6,7 @@ import { FaCheck } from "react-icons/fa";
 import React, { useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 const MarkdownHeader = ({ markdown, setMarkdown }) => {
   const [name, setName] = useState("Untitled");
@@ -42,6 +43,7 @@ const MarkdownHeader = ({ markdown, setMarkdown }) => {
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(markdown);
+    toast.info("Copied to clipboard");
   };
 
   const handleDownload = () => {

@@ -4,6 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { dark, shadesOfPurple } from "@clerk/themes";
 import Header from "@/components/header";
 import LayoutWrapper from "@/components/layoutWrapper";
+import { Toaster } from "sonner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -33,6 +34,7 @@ export default function RootLayout({ children }) {
         <body className={`${inter.className} bg-dusk`}>
           <Header />
           <LayoutWrapper>{children}</LayoutWrapper>
+          <Toaster richColors />
         </body>
       </html>
     </ClerkProvider>
