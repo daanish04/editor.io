@@ -24,6 +24,7 @@ model User {
 
   markdowns Markdown[]
   codes     Code[]
+  settings  Settings[]
 }
 
 model Markdown {
@@ -31,6 +32,7 @@ model Markdown {
   markdown  String
   userId    String
   createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id])
 
@@ -44,8 +46,51 @@ model Code {
   js        String
   userId    String
   createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id])
 
   @@index([userId, createdAt])
+}
+
+model Settings {
+  id                  String       @id @default(uuid())
+  userId              String       @unique
+  user                User         @relation(fields: [userId], references: [id])
+
+  // User Settings
+  autosaveMode        AutosaveMode @default(DISABLED)
+  keepToasts          Boolean      @default(true)
+  buttonSounds        Boolean      @default(true)
+  sortBy              SortBy       @default(LAST_MODIFIED)
+
+  // Editor Settings
+  fontSize            FontSize     @default(MD)
+  theme               String       @default("dark") // <-- changed to string
+  lineNumbers         Boolean      @default(true)
+
+  // Markdown Settings
+  enableGFM           Boolean      @default(true)
+  syntaxHighlighting  Boolean      @default(true)
+
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+}
+
+
+enum AutosaveMode {
+  DISABLED
+  LOCAL
+  DB
+}
+
+enum FontSize {
+  SM
+  MD
+  LG
+}
+
+enum SortBy {
+  NAME
+  LAST_MODIFIED
 }
