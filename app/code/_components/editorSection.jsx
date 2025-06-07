@@ -20,7 +20,7 @@ export default function EditorSection({
         extensions={[extension]}
         height="360px"
         theme="dark"
-        basicSetup={{ lineNumbers: true, lineWrapping: true }}
+        basicSetup={{ lineNumbers: true }}
       />
     </div>
   );
