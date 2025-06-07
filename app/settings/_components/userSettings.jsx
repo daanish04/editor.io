@@ -11,29 +11,47 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-// Mocked server settings (replace with real db fetch)
-const defaultSettings = {
-  autosave: "local",
-  keepToasts: true,
-  buttonSounds: false,
-  sortBy: "name",
-};
+import { useUserSettings } from "@/context/userSettingsContext";
+import { updateSettings } from "@/actions/settings";
+import { LuLoaderCircle } from "react-icons/lu";
+import { toast } from "sonner";
 
 const UserSettings = () => {
-  const [settings, setSettings] = useState(defaultSettings);
-  const [localSettings, setLocalSettings] = useState(defaultSettings);
+  const { settings, setSettings } = useUserSettings();
+  const [localSettings, setLocalSettings] = useState(null);
 
-  const hasChanges = JSON.stringify(settings) !== JSON.stringify(localSettings);
+  useEffect(() => {
+    if (settings) setLocalSettings(settings);
+  }, [settings]);
+
+  if (!localSettings)
+    return (
+      <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 space-y-20">
+        <h2 className="text-2xl sm:text-3xl font-bold text-cream">
+          User Settings
+        </h2>
+        <LuLoaderCircle className="animate-spin mx-auto" size={35} />
+      </div>
+    );
+
+  const isDirty = JSON.stringify(settings) !== JSON.stringify(localSettings);
+
+  const handleSave = async () => {
+    const updated = await updateSettings(localSettings);
+    if (updated.success) {
+      setSettings(updated.data);
+      toast.success("Settings saved successfully");
+    } else {
+      toast.error("Failed to save settings");
+    }
+  };
+
+  const handleCancel = () => {
+    setLocalSettings(settings);
+  };
 
   const handleChange = (field, value) => {
     setLocalSettings((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const resetSettings = () => setLocalSettings(settings);
-  const saveSettings = async () => {
-    // TODO: Call server action
-    setSettings(localSettings);
   };
 
   return (
@@ -43,27 +61,25 @@ const UserSettings = () => {
       </h2>
 
       <div className="grid gap-6">
-        {/* Autosave */}
         <div className="flex flex-col sm:flex-row justify-between items-center">
           <Label className="mb-2 sm:mb-0 text-left w-full sm:w-1/2 text-cream">
             Autosave
           </Label>
           <Select
-            value={localSettings.autosave}
-            onValueChange={(value) => handleChange("autosave", value)}
+            value={localSettings.autosaveMode}
+            onValueChange={(value) => handleChange("autosaveMode", value)}
           >
             <SelectTrigger className="w-[200px]">
-              <SelectValue placeholder="Select Autosave Option" />
+              <SelectValue placeholder="Select Autosave Mode" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="disabled">Disabled</SelectItem>
-              <SelectItem value="local">Local</SelectItem>
-              <SelectItem value="db">Database</SelectItem>
+              <SelectItem value="DISABLED">Disabled</SelectItem>
+              <SelectItem value="LOCAL">Local</SelectItem>
+              <SelectItem value="DB">Database</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
-        {/* Keep Toasts */}
         <div className="flex flex-col sm:flex-row justify-between items-center">
           <Label className="mb-2 sm:mb-0 text-left w-full sm:w-1/2 text-cream">
             Keep Toasts
@@ -74,7 +90,6 @@ const UserSettings = () => {
           />
         </div>
 
-        {/* Button Sounds */}
         <div className="flex flex-col sm:flex-row justify-between items-center">
           <Label className="mb-2 sm:mb-0 text-left w-full sm:w-1/2 text-cream">
             Button Sounds
@@ -85,7 +100,6 @@ const UserSettings = () => {
           />
         </div>
 
-        {/* File Sorting */}
         <div className="flex flex-col sm:flex-row justify-between items-center">
           <Label className="mb-2 sm:mb-0 text-left w-full sm:w-1/2 text-cream">
             Sort By
@@ -95,26 +109,29 @@ const UserSettings = () => {
             onValueChange={(value) => handleChange("sortBy", value)}
           >
             <SelectTrigger className="w-[200px]">
-              <SelectValue placeholder="Sort files by" />
+              <SelectValue placeholder="Select File Sorting" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="name">Name</SelectItem>
-              <SelectItem value="lastModified">Last Modified</SelectItem>
+              <SelectItem value="NAME">Name</SelectItem>
+              <SelectItem value="LAST_MODIFIED">Last Modified</SelectItem>
             </SelectContent>
           </Select>
         </div>
       </div>
 
-      {/* Buttons */}
       <div className="flex justify-end space-x-4 pt-6">
         <Button
-          variant="outline"
-          onClick={resetSettings}
-          disabled={!hasChanges}
+          onClick={handleCancel}
+          disabled={!isDirty}
+          className="bg-red-500 hover:bg-red-600"
         >
           Cancel
         </Button>
-        <Button onClick={saveSettings} disabled={!hasChanges}>
+        <Button
+          onClick={handleSave}
+          disabled={!isDirty}
+          className="bg-blue-500 hover:bg-blue-600"
+        >
           Save
         </Button>
       </div>

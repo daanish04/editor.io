@@ -9,33 +9,46 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-
-const defaultEditorSettings = {
-  fontSize: "md",
-  theme: "dark",
-  lineNumbers: true,
-};
+import { useUserSettings } from "@/context/userSettingsContext";
+import { LuLoaderCircle } from "react-icons/lu";
 
 const EditorSettings = () => {
-  const [editorSettings, setEditorSettings] = useState(defaultEditorSettings);
-  const [savedSettings, setSavedSettings] = useState(defaultEditorSettings);
+  const { settings, setSettings } = useUserSettings();
+  const [localSettings, setLocalSettings] = useState(null);
 
   useEffect(() => {
-    // TODO: Fetch initial values from DB
-  }, []);
+    if (settings) setLocalSettings(settings);
+  }, [settings]);
 
-  const isChanged =
-    JSON.stringify(editorSettings) !== JSON.stringify(savedSettings);
+  if (!localSettings)
+    return (
+      <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 space-y-20">
+        <h2 className="text-2xl sm:text-3xl font-bold text-cream">
+          Editor Settings
+        </h2>
+        <LuLoaderCircle className="animate-spin mx-auto" size={35} />
+      </div>
+    );
 
-  const handleSave = () => {
-    // TODO: use server action to update DB
-    setSavedSettings(editorSettings);
+  const isDirty = JSON.stringify(settings) !== JSON.stringify(localSettings);
+
+  const handleSave = async () => {
+    const updated = await updateSettings(localSettings);
+    if (updated.success) {
+      setSettings(updated.data);
+      toast.success("Settings saved successfully");
+    } else {
+      toast.error("Failed to save settings");
+    }
   };
 
   const handleCancel = () => {
-    setEditorSettings(savedSettings);
+    setLocalSettings(settings);
   };
 
+  const handleChange = (field, value) => {
+    setLocalSettings((prev) => ({ ...prev, [field]: value }));
+  };
   return (
     <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 space-y-6">
       <h2 className="text-2xl sm:text-3xl font-bold text-cream">
@@ -46,18 +59,16 @@ const EditorSettings = () => {
         <div className="flex justify-between items-center">
           <Label>Font Size</Label>
           <Select
-            value={editorSettings.fontSize}
-            onValueChange={(val) =>
-              setEditorSettings({ ...editorSettings, fontSize: val })
-            }
+            value={localSettings.fontSize}
+            onValueChange={(value) => handleChange("fontSize", value)}
           >
             <SelectTrigger className="w-[140px]">
-              <SelectValue placeholder="Select font size" />
+              <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="sm">Small (12)</SelectItem>
-              <SelectItem value="md">Medium (14)</SelectItem>
-              <SelectItem value="lg">Large (16)</SelectItem>
+              <SelectItem value="SM">Small (12)</SelectItem>
+              <SelectItem value="MD">Medium (14)</SelectItem>
+              <SelectItem value="LG">Large (16)</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -65,13 +76,11 @@ const EditorSettings = () => {
         <div className="flex justify-between items-center">
           <Label>Theme</Label>
           <Select
-            value={editorSettings.theme}
-            onValueChange={(val) =>
-              setEditorSettings({ ...editorSettings, theme: val })
-            }
+            value={localSettings.theme}
+            onValueChange={(value) => handleChange("theme", value)}
           >
             <SelectTrigger className="w-[140px]">
-              <SelectValue placeholder="Select theme" />
+              <SelectValue />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="dark">Dark</SelectItem>
@@ -83,28 +92,26 @@ const EditorSettings = () => {
         <div className="flex justify-between items-center">
           <Label>Line Numbers</Label>
           <Switch
-            checked={editorSettings.lineNumbers}
-            onCheckedChange={(val) =>
-              setEditorSettings({ ...editorSettings, lineNumbers: val })
-            }
+            checked={localSettings.lineNumbers}
+            onCheckedChange={(value) => handleChange("lineNumbers", value)}
           />
         </div>
       </div>
 
-      <div className="flex gap-4 pt-4">
+      <div className="flex justify-end space-x-4 pt-6">
         <Button
-          disabled={!isChanged}
-          onClick={handleSave}
-          className="font-semibold"
-        >
-          Save
-        </Button>
-        <Button
-          disabled={!isChanged}
           onClick={handleCancel}
-          variant="secondary"
+          disabled={!isDirty}
+          className="bg-red-500 hover:bg-red-600"
         >
           Cancel
+        </Button>
+        <Button
+          onClick={handleSave}
+          disabled={!isDirty}
+          className="bg-blue-500 hover:bg-blue-600"
+        >
+          Save
         </Button>
       </div>
     </div>

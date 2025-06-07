@@ -5,6 +5,7 @@ import { dark, shadesOfPurple } from "@clerk/themes";
 import Header from "@/components/header";
 import LayoutWrapper from "@/components/layoutWrapper";
 import { Toaster } from "sonner";
+import { UserSettingsProvider } from "@/context/userSettingsContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -32,9 +33,11 @@ export default function RootLayout({ children }) {
     >
       <html lang="en">
         <body className={`${inter.className} bg-dusk`}>
-          <Header />
-          <LayoutWrapper>{children}</LayoutWrapper>
-          <Toaster richColors />
+          <UserSettingsProvider>
+            <Header />
+            <LayoutWrapper>{children}</LayoutWrapper>
+            <Toaster richColors />
+          </UserSettingsProvider>
         </body>
       </html>
     </ClerkProvider>

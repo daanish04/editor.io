@@ -22,9 +22,9 @@ model User {
   imageUrl  String?
   createdAt DateTime @default(now())
 
-  markdowns Markdown[]
+  markdowns Markdown[] 
   codes     Code[]
-  settings  Settings[]
+  settings  Settings?
 }
 
 model Markdown {
@@ -34,7 +34,7 @@ model Markdown {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, createdAt])
 }
@@ -48,7 +48,7 @@ model Code {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, createdAt])
 }
@@ -56,7 +56,7 @@ model Code {
 model Settings {
   id                  String       @id @default(uuid())
   userId              String       @unique
-  user                User         @relation(fields: [userId], references: [id])
+  user                User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   // User Settings
   autosaveMode        AutosaveMode @default(DISABLED)
