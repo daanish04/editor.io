@@ -37,7 +37,7 @@ model Markdown {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId, createdAt])
+  @@index([userId, name, updatedAt])
 }
 
 model Code {
@@ -52,7 +52,7 @@ model Code {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId, createdAt])
+  @@index([userId, name, updatedAt])
 }
 
 model Settings {
