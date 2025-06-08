@@ -134,3 +134,53 @@ export async function getMd(id) {
     return { success: false, error: error.message };
   }
 }
+
+export async function getCodeList() {
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error("User is not authenticated");
+
+    const user = await db.user.findUnique({
+      where: { clerkId: userId },
+      include: { settings: true },
+    });
+    if (!user) throw new Error("User is not found");
+
+    const sortBy = user.settings?.sortBy ?? "LAST_MODIFIED";
+
+    const codes = await db.code.findMany({
+      where: { userId: user.id },
+      orderBy: sortBy === "NAME" ? { name: "asc" } : { updatedAt: "desc" },
+    });
+
+    return { success: true, data: codes };
+  } catch (error) {
+    console.error("Error getting code list", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function getMdList() {
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error("User is not authenticated");
+
+    const user = await db.user.findUnique({
+      where: { clerkId: userId },
+      include: { settings: true },
+    });
+    if (!user) throw new Error("User is not found");
+
+    const sortBy = user.settings?.sortBy ?? "LAST_MODIFIED";
+
+    const markdowns = await db.markdown.findMany({
+      where: { userId: user.id },
+      orderBy: sortBy === "NAME" ? { name: "asc" } : { updatedAt: "desc" },
+    });
+
+    return { success: true, data: markdowns };
+  } catch (error) {
+    console.error("Error getting markdown list", error);
+    return { success: false, error: error.message };
+  }
+}
