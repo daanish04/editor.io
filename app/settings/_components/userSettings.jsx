@@ -75,7 +75,7 @@ const UserSettings = () => {
             <SelectContent>
               <SelectItem value="DISABLED">Disabled</SelectItem>
               <SelectItem value="LOCAL">Local</SelectItem>
-              <SelectItem value="DB">Database</SelectItem>
+              {/* <SelectItem value="DB">Database</SelectItem> */}
             </SelectContent>
           </Select>
         </div>

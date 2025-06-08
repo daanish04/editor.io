@@ -7,6 +7,7 @@ export default function EditorSection({
   value,
   onChange,
   extension,
+  settings,
 }) {
   return (
     <div className="pt-1">
@@ -14,14 +15,23 @@ export default function EditorSection({
         {icon} {title}
         <HeadLines title={title} />
       </div>
-      <CodeMirror
-        value={value}
-        onChange={(val) => onChange(val)}
-        extensions={[extension]}
-        height="360px"
-        theme="dark"
-        basicSetup={{ lineNumbers: true }}
-      />
+      {settings && (
+        <CodeMirror
+          className={`${
+            settings.fontSize === "SM"
+              ? "text-[12px]"
+              : settings.fontSize === "LG"
+              ? "text-[16px]"
+              : "text-[14px]"
+          } ${settings.theme === "light" ? "text-zinc-600" : ""}`}
+          value={value}
+          onChange={(val) => onChange(val)}
+          extensions={[extension]}
+          height="500px"
+          theme={settings.theme || "dark"}
+          basicSetup={{ lineNumbers: settings.lineNumbers }}
+        />
+      )}
     </div>
   );
 }

@@ -11,6 +11,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { useUserSettings } from "@/context/userSettingsContext";
 import { LuLoaderCircle } from "react-icons/lu";
+import { updateSettings } from "@/actions/settings";
+import { toast } from "sonner";
 
 const EditorSettings = () => {
   const { settings, setSettings } = useUserSettings();

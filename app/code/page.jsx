@@ -8,19 +8,19 @@ import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { GrDrag } from "react-icons/gr";
 import { FaHtml5, FaCss3Alt } from "react-icons/fa";
 import { RiJavascriptFill } from "react-icons/ri";
-import { MdRefresh } from "react-icons/md";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import EditorSection from "./_components/editorSection";
-import { Button } from "@/components/ui/button";
 import CodeHeader from "./_components/codeHeader";
+import { useUserSettings } from "@/context/userSettingsContext";
+import { getCode, saveCode } from "@/actions/saveState";
+import { toast } from "sonner";
+import { useSearchParams } from "next/navigation";
 
 export default function CodePage() {
+  const searchParams = useSearchParams();
+  const { settings } = useUserSettings();
+  const [filename, setFilename] = useState(null);
   const [layoutKey, setLayoutKey] = useState(0);
+  const [codeId, setCodeId] = useState(null);
   const [htmlCode, setHtmlCode] = useState(`<h1>
     Welcome to Editor.io
 </h1>`);
@@ -38,6 +38,26 @@ export default function CodePage() {
       `);
 
   useEffect(() => {
+    const id = searchParams.get("id");
+    if (!id) return;
+
+    const fetchCode = async () => {
+      const data = await getCode(id);
+      if (data.success) {
+        setHtmlCode(data.data.html);
+        setCssCode(data.data.css);
+        setJsCode(data.data.js);
+        setCodeId(data.data.id);
+        setFilename(data.data.name);
+      } else {
+        toast.error("Failed to load code");
+      }
+    };
+
+    fetchCode();
+  }, [searchParams]);
+
+  useEffect(() => {
     const timeout = setTimeout(() => {
       setSrcDoc(`
         <html>
@@ -50,6 +70,33 @@ export default function CodePage() {
 
     return () => clearTimeout(timeout);
   }, [htmlCode, cssCode, jsCode]);
+
+  useEffect(() => {
+    const id = searchParams.get("id");
+    if (id) return;
+    // Only load localStorage content if there's no id in the URL
+    if (settings?.autosaveMode === "LOCAL") {
+      const storedHtml = localStorage.getItem("editor-html");
+      const storedCss = localStorage.getItem("editor-css");
+      const storedJs = localStorage.getItem("editor-js");
+
+      if (storedHtml) setHtmlCode(storedHtml);
+      if (storedCss) setCssCode(storedCss);
+      if (storedJs) setJsCode(storedJs);
+    }
+  }, [settings?.autosaveMode]);
+
+  useEffect(() => {
+    if (settings?.autosaveMode === "LOCAL") {
+      const timeout = setTimeout(() => {
+        localStorage.setItem("editor-html", htmlCode);
+        localStorage.setItem("editor-css", cssCode);
+        localStorage.setItem("editor-js", jsCode);
+      }, 1000);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [htmlCode, cssCode, jsCode, settings?.autosaveMode]);
 
   const handleScreenReset = () => {
     localStorage.setItem(
@@ -75,9 +122,38 @@ export default function CodePage() {
     setJsCode(`console.log("Welcome to Editor.io!");`);
   };
 
+  const handleSave = async (name) => {
+    if (!htmlCode.trim() && !cssCode.trim() && !jsCode.trim()) {
+      toast.error("Cannot save empty code!");
+      return;
+    }
+
+    const code = {
+      ...(codeId ? { id: codeId } : {}),
+      name,
+      html: htmlCode,
+      css: cssCode,
+      js: jsCode,
+    };
+
+    const saved = await saveCode(code);
+
+    if (saved.success) {
+      if (saved.data.id) {
+        setCodeId(saved.data.id);
+      }
+      toast.success("Saved successfully");
+    } else {
+      toast.error(saved.error || "Internal error occurred");
+    }
+  };
+
   return (
     <div>
       <CodeHeader
+        handleSave={handleSave}
+        autosave={settings?.autosaveMode}
+        codeName={filename}
         onResetScreen={handleScreenReset}
         onResetCode={handleCodeReset}
       />
@@ -97,6 +173,7 @@ export default function CodePage() {
                   value={htmlCode}
                   onChange={setHtmlCode}
                   extension={html()}
+                  settings={settings}
                 />
               </Panel>
               <PanelResizeHandle className="bg-primary/5 rounded-t-md flex justify-center items-center">
@@ -109,6 +186,7 @@ export default function CodePage() {
                   value={cssCode}
                   onChange={setCssCode}
                   extension={css()}
+                  settings={settings}
                 />
               </Panel>
               <PanelResizeHandle className="bg-primary/5 rounded-t-md flex justify-center items-center">
@@ -121,6 +199,7 @@ export default function CodePage() {
                   value={jsCode}
                   onChange={setJsCode}
                   extension={javascript()}
+                  settings={settings}
                 />
               </Panel>
             </PanelGroup>

@@ -29,6 +29,7 @@ model User {
 
 model Markdown {
   id        String   @id @default(uuid())
+  name      String  
   markdown  String
   userId    String
   createdAt DateTime @default(now())
@@ -41,6 +42,7 @@ model Markdown {
 
 model Code {
   id        String   @id @default(uuid())
+  name      String
   html      String
   css       String
   js        String
