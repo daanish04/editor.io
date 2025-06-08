@@ -3,17 +3,28 @@ import { LuPencil } from "react-icons/lu";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import { FaCheck } from "react-icons/fa";
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
-const MarkdownHeader = ({ markdown, setMarkdown }) => {
-  const [name, setName] = useState("Untitled");
+const MarkdownHeader = ({
+  autosave,
+  codeName,
+  markdown,
+  setMarkdown,
+  handleSave,
+}) => {
+  const [name, setName] = useState("Md_untitled");
   const [newName, setNewName] = useState(name);
   const [isEditing, setIsEditing] = useState(false);
 
   const fileImportRef = useRef(null);
+
+  useEffect(() => {
+    setName(codeName || "Md_untitled");
+    setNewName(codeName || "Md_untitled");
+  }, [codeName]);
 
   const handleRename = () => {
     setName(newName);
@@ -70,7 +81,7 @@ const MarkdownHeader = ({ markdown, setMarkdown }) => {
           onChange={(e) => setNewName(e.target.value)}
           disabled={!isEditing}
           autoFocus={true}
-          className="border-0 focus:outline-none focus:ring-0 focus-visible:ring-0 shadow-none font-semibold text-white w-30 disabled:text-cream disabled:opacity-80"
+          className="border-0 focus:outline-none focus:ring-0 focus-visible:ring-0 shadow-none font-semibold text-white w-35 disabled:text-cream disabled:opacity-80"
         />
         {!isEditing ? (
           <Button
@@ -100,12 +111,23 @@ const MarkdownHeader = ({ markdown, setMarkdown }) => {
         )}
       </div>
       <div className="flex items-center justify-between gap-3">
+        {/* Autosave */}
+        <p className="text-sm text-cream mx-3">
+          Autosave :{" "}
+          {autosave === "LOCAL" ? (
+            <span className="text-green-200">ON</span>
+          ) : (
+            <span className="text-red-200">OFF</span>
+          )}
+        </p>
+
         {/* Save btn */}
 
         <Button
           variant="outline"
           size="sm"
           className="px-2 bg-cream hover:bg-white"
+          onClick={() => handleSave(name)}
         >
           <span className="text-xs">Save</span>
         </Button>

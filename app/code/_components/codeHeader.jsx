@@ -20,10 +20,8 @@ const CodeHeader = ({
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    if (codeName) {
-      setName(codeName);
-      setNewName(codeName);
-    }
+    setName(codeName || "Code_untitled");
+    setNewName(codeName || "Code_untitled");
   }, [codeName]);
 
   const handleRename = () => {

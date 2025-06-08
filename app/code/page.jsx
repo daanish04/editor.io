@@ -39,7 +39,19 @@ export default function CodePage() {
 
   useEffect(() => {
     const id = searchParams.get("id");
-    if (!id) return;
+    if (!id) {
+      setCodeId(null);
+      setFilename(null);
+      setHtmlCode(`<h1>
+    Welcome to Editor.io
+</h1>`);
+      setCssCode(`body {
+    color: #17131a;
+    text-align: center;
+}`);
+      setJsCode(`console.log("Welcome to Editor.io!");`);
+      return;
+    }
 
     const fetchCode = async () => {
       const data = await getCode(id);
@@ -88,13 +100,24 @@ export default function CodePage() {
 
   useEffect(() => {
     if (settings?.autosaveMode === "LOCAL") {
-      const timeout = setTimeout(() => {
-        localStorage.setItem("editor-html", htmlCode);
-        localStorage.setItem("editor-css", cssCode);
-        localStorage.setItem("editor-js", jsCode);
-      }, 1000);
+      const id = searchParams.get("id");
+      if (id) {
+        const timeout = setTimeout(() => {
+          localStorage.setItem(`editor-html-${id}`, htmlCode);
+          localStorage.setItem(`editor-css-${id}`, cssCode);
+          localStorage.setItem(`editor-js-${id}`, jsCode);
+        }, 1000);
 
-      return () => clearTimeout(timeout);
+        return () => clearTimeout(timeout);
+      } else {
+        const timeout = setTimeout(() => {
+          localStorage.setItem("editor-html", htmlCode);
+          localStorage.setItem("editor-css", cssCode);
+          localStorage.setItem("editor-js", jsCode);
+        }, 1000);
+
+        return () => clearTimeout(timeout);
+      }
     }
   }, [htmlCode, cssCode, jsCode, settings?.autosaveMode]);
 
