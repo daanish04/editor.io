@@ -11,8 +11,14 @@ const Settings = () => {
 
   return (
     <div className="p-6 sm:p-10 flex flex-col items-center">
+      <h2 className="text-cream text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight pb-7">
+        Personal{" "}
+        <span className="text-accent">
+          S<u>ettings</u>
+        </span>
+      </h2>
       {/* Header Buttons */}
-      <div className="flex gap-3 bg-accent rounded-xl w-fit py-1 px-2 mb-6">
+      <div className="flex gap-3 md:gap-6 lg:gap-10 bg-accent rounded-xl w-fit py-1 px-2 mb-6">
         {["user", "editor", "markdown"].map((type) => (
           <Button
             key={type}
