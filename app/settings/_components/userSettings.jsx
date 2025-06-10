@@ -80,15 +80,16 @@ const UserSettings = () => {
           </Select>
         </div>
 
-        <div className="flex flex-col sm:flex-row justify-between items-center">
+        {/* <div className="flex flex-col sm:flex-row justify-between items-center">
           <Label className="mb-2 sm:mb-0 text-left w-full sm:w-1/2 text-cream">
             Keep Toasts
+            <span className="text-xs">(TO DO)</span>
           </Label>
           <Switch
             checked={localSettings.keepToasts}
             onCheckedChange={(value) => handleChange("keepToasts", value)}
           />
-        </div>
+        </div> */}
 
         <div className="flex flex-col sm:flex-row justify-between items-center">
           <Label className="mb-2 sm:mb-0 text-left w-full sm:w-1/2 text-cream">

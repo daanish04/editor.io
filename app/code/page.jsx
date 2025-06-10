@@ -176,6 +176,7 @@ export default function CodePage() {
       <CodeHeader
         handleSave={handleSave}
         autosave={settings?.autosaveMode}
+        keepSound={settings?.buttonSounds}
         codeName={filename}
         onResetScreen={handleScreenReset}
         onResetCode={handleCodeReset}

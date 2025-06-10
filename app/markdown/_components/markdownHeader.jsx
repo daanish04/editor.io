@@ -7,9 +7,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import useSound from "use-sound";
 
 const MarkdownHeader = ({
   autosave,
+  keepSound,
   codeName,
   markdown,
   setMarkdown,
@@ -18,6 +20,7 @@ const MarkdownHeader = ({
   const [name, setName] = useState("Md_untitled");
   const [newName, setNewName] = useState(name);
   const [isEditing, setIsEditing] = useState(false);
+  const [playClick] = useSound("/TapClick.mp3");
 
   const fileImportRef = useRef(null);
 
@@ -86,7 +89,10 @@ const MarkdownHeader = ({
         {!isEditing ? (
           <Button
             variant="ghost"
-            onClick={() => setIsEditing(true)}
+            onClick={() => {
+              if (keepSound) playClick();
+              setIsEditing(true);
+            }}
             className="hover:bg-secondary/20 hover:text-blue-300 py-1 px-2"
           >
             <LuPencil className="bg-none hover:bg-none" />
@@ -95,14 +101,20 @@ const MarkdownHeader = ({
           <div className="flex items-baseline justify-center">
             <Button
               variant="ghost"
-              onClick={handleRename}
+              onClick={() => {
+                if (keepSound) playClick();
+                handleRename();
+              }}
               className="hover:bg-secondary/20 hover:text-green-400 py-1 px-2"
             >
               <FaCheck />
             </Button>
             <Button
               variant="ghost"
-              onClick={handleNameCancel}
+              onClick={() => {
+                if (keepSound) playClick();
+                handleNameCancel();
+              }}
               className="hover:bg-secondary/20 hover:text-red-400 py-1 px-2"
             >
               <IoMdCloseCircleOutline />
@@ -127,7 +139,10 @@ const MarkdownHeader = ({
           variant="outline"
           size="sm"
           className="px-2 bg-cream hover:bg-white"
-          onClick={() => handleSave(name)}
+          onClick={() => {
+            if (keepSound) playClick();
+            handleSave(name);
+          }}
         >
           <span className="text-xs">Save</span>
         </Button>
@@ -144,7 +159,10 @@ const MarkdownHeader = ({
           variant="outline"
           size="sm"
           className="px-2 bg-cream hover:bg-white"
-          onClick={handleImportClick}
+          onClick={() => {
+            if (keepSound) playClick();
+            handleImportClick();
+          }}
         >
           <span className="text-xs">Import(.md)</span>
         </Button>
@@ -153,7 +171,10 @@ const MarkdownHeader = ({
           variant="outline"
           size="sm"
           className="px-2 bg-cream hover:bg-white"
-          onClick={handleCopy}
+          onClick={() => {
+            if (keepSound) playClick();
+            handleCopy();
+          }}
         >
           <span className="text-xs">Copy</span>
         </Button>
@@ -163,7 +184,10 @@ const MarkdownHeader = ({
           variant="outline"
           size="sm"
           className="px-2 bg-cream hover:bg-white"
-          onClick={handleDownload}
+          onClick={() => {
+            if (keepSound) playClick();
+            handleDownload();
+          }}
         >
           <span className="text-xs">Download (.md)</span>
         </Button>

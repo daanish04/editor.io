@@ -176,6 +176,7 @@ const MarkdownPage = () => {
     <div>
       <MarkdownHeader
         autosave={settings?.autosaveMode}
+        keepSound={settings?.buttonSounds}
         markdown={markdown}
         codeName={filename}
         setMarkdown={setMarkdown}

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import useSound from "use-sound";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,6 +12,7 @@ import { FaCheck } from "react-icons/fa";
 const CodeHeader = ({
   handleSave,
   autosave,
+  keepSound,
   codeName,
   onResetScreen,
   onResetCode,
@@ -18,6 +20,7 @@ const CodeHeader = ({
   const [name, setName] = useState("Code_untitled");
   const [newName, setNewName] = useState(name);
   const [isEditing, setIsEditing] = useState(false);
+  const [playClick] = useSound("/TapClick.mp3");
 
   useEffect(() => {
     setName(codeName || "Code_untitled");
@@ -53,7 +56,10 @@ const CodeHeader = ({
         {!isEditing ? (
           <Button
             variant="ghost"
-            onClick={() => setIsEditing(true)}
+            onClick={() => {
+              if (keepSound) playClick();
+              setIsEditing(true);
+            }}
             className="hover:bg-secondary/20 hover:text-blue-300 py-1 px-2"
           >
             <LuPencil />
@@ -62,14 +68,20 @@ const CodeHeader = ({
           <div className="flex items-baseline">
             <Button
               variant="ghost"
-              onClick={handleRename}
+              onClick={() => {
+                if (keepSound) playClick();
+                handleRename();
+              }}
               className="hover:bg-secondary/20 hover:text-green-400 py-1 px-2"
             >
               <FaCheck />
             </Button>
             <Button
               variant="ghost"
-              onClick={handleNameCancel}
+              onClick={() => {
+                if (keepSound) playClick();
+                handleNameCancel();
+              }}
               className="hover:bg-secondary/20 hover:text-red-400 py-1 px-2"
             >
               <IoMdCloseCircleOutline />
@@ -93,7 +105,10 @@ const CodeHeader = ({
           variant="outline"
           size="sm"
           className="px-2 bg-cream hover:bg-white"
-          onClick={() => handleSave(name)}
+          onClick={() => {
+            if (keepSound) playClick();
+            handleSave(name);
+          }}
         >
           <span className="text-xs">Save</span>
         </Button>
@@ -102,7 +117,10 @@ const CodeHeader = ({
           variant="outline"
           size="sm"
           className="px-2 bg-cream hover:bg-white"
-          onClick={onResetScreen}
+          onClick={() => {
+            if (keepSound) playClick();
+            onResetScreen();
+          }}
         >
           <span className="text-xs">Reset Screen</span>
         </Button>
@@ -111,7 +129,10 @@ const CodeHeader = ({
           variant="outline"
           size="sm"
           className="px-2 bg-cream hover:bg-white"
-          onClick={onResetCode}
+          onClick={() => {
+            if (keepSound) playClick();
+            onResetCode();
+          }}
         >
           <span className="text-xs">Reset Code</span>
         </Button>
