@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Editor.io
 
-## Getting Started
+A modern in-browser **HTML/CSS/JS + Markdown** editor with live preview, theming, and persistence.
 
-First, run the development server:
+---
+
+## 🚀 Features
+
+* 🧠 Live editing and instant preview for:
+
+  * HTML, CSS, and JavaScript
+  * Markdown with GitHub-flavored rendering
+* 🎨 Theme support for the editor (light/dark + more coming)
+* 💾 Autosave with toggle: save to `localStorage` or remote database
+* 👤 User authentication powered by Clerk
+* 📥 Import / 📤 Download code files
+
+---
+
+## 🛠️ Tech Stack
+
+Built using modern web tools:
+
+* **Next.js 15** (App Router)
+* **TailwindCSS** & **shadcn/ui** (UI components)
+* **Clerk** (auth)
+* **Prisma + PostgreSQL** (DB for saved code snippets)
+* **CodeMirror 6** via `@uiw/react-codemirror`
+* **react-syntax-highlighter**, **github-markdown-css** (Markdown display)
+
+---
+
+## 🧪 Local Development
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# 1. Clone the repo
+$ git clone https://github.com/daanish04/editor.io.git
+$ cd editor.io
+
+# 2. Install dependencies
+$ npm install
+
+# 3. Set up environment
+$ cp .env.example .env.local
+# fill in env values (Clerk, DB, etc.)
+
+# 4. Generate Prisma Client
+$ npx prisma generate
+
+# 5. Run dev server
+$ npm run dev
+```
+---
+
+## 🔐 Auth & Environment
+
+Ensure the following environment variables are set in your `.env.local` file:
+
+### 📄 `.env.example`
+
+```env
+# Clerk Authentication
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+CLERK_SECRET_KEY=your_clerk_secret_key
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/signin
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/signup
+
+# Prisma + Database (PostgreSQL assumed)
+DATABASE_URL=postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public
+DIRECT_URL=postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## 📦 Deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Live: [editor-io-nine.vercel.app](https://editor-io-nine.vercel.app/)
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
