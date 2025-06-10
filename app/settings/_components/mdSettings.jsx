@@ -6,10 +6,12 @@ import { useUserSettings } from "@/context/userSettingsContext";
 import { LuLoaderCircle } from "react-icons/lu";
 import { updateSettings } from "@/actions/settings";
 import { toast } from "sonner";
+import useSound from "use-sound";
 
 const MdSettings = () => {
   const { settings, setSettings } = useUserSettings();
   const [localSettings, setLocalSettings] = useState(null);
+  const [playClick] = useSound("/TapClick.mp3");
 
   useEffect(() => {
     if (settings) setLocalSettings(settings);
@@ -73,14 +75,20 @@ const MdSettings = () => {
 
       <div className="flex justify-end space-x-4 pt-6">
         <Button
-          onClick={handleCancel}
+          onClick={() => {
+            if (settings?.buttonSounds) playClick();
+            handleCancel();
+          }}
           disabled={!isDirty}
           className="bg-red-500 hover:bg-red-600"
         >
           Cancel
         </Button>
         <Button
-          onClick={handleSave}
+          onClick={() => {
+            if (settings?.buttonSounds) playClick();
+            handleSave();
+          }}
           disabled={!isDirty}
           className="bg-blue-500 hover:bg-blue-600"
         >

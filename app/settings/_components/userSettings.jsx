@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import useSound from "use-sound";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,7 @@ import { toast } from "sonner";
 const UserSettings = () => {
   const { settings, setSettings } = useUserSettings();
   const [localSettings, setLocalSettings] = useState(null);
+  const [playClick] = useSound("/TapClick.mp3");
 
   useEffect(() => {
     if (settings) setLocalSettings(settings);
@@ -122,14 +124,20 @@ const UserSettings = () => {
 
       <div className="flex justify-end space-x-4 pt-6">
         <Button
-          onClick={handleCancel}
+          onClick={() => {
+            if (settings?.buttonSounds) playClick();
+            handleCancel();
+          }}
           disabled={!isDirty}
           className="bg-red-500 hover:bg-red-600"
         >
           Cancel
         </Button>
         <Button
-          onClick={handleSave}
+          onClick={() => {
+            if (settings?.buttonSounds) playClick();
+            handleSave();
+          }}
           disabled={!isDirty}
           className="bg-blue-500 hover:bg-blue-600"
         >
