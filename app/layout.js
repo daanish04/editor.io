@@ -14,6 +14,9 @@ const inter = Inter({
 export const metadata = {
   title: "Editor.io",
   description: "A modern code and markdown editor for the web",
+  icons: {
+    icon: "/favicon.png",
+  },
 };
 
 export default function RootLayout({ children }) {
