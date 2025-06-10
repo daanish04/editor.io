@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { html } from "@codemirror/lang-html";
 import { css } from "@codemirror/lang-css";
 import { javascript } from "@codemirror/lang-javascript";
@@ -14,6 +14,7 @@ import { useUserSettings } from "@/context/userSettingsContext";
 import { getCode, saveCode } from "@/actions/saveState";
 import { toast } from "sonner";
 import { useSearchParams } from "next/navigation";
+import { LuLoaderCircle } from "react-icons/lu";
 
 export default function CodePage() {
   const searchParams = useSearchParams();
@@ -172,75 +173,83 @@ export default function CodePage() {
   };
 
   return (
-    <div>
-      <CodeHeader
-        handleSave={handleSave}
-        autosave={settings?.autosaveMode}
-        keepSound={settings?.buttonSounds}
-        codeName={filename}
-        onResetScreen={handleScreenReset}
-        onResetCode={handleCodeReset}
-      />
+    <Suspense
+      fallback={
+        <div className="flex justify-center items-center h-full w-full">
+          <LuLoaderCircle className="animate-spin mx-auto" size={35} />
+        </div>
+      }
+    >
+      <div>
+        <CodeHeader
+          handleSave={handleSave}
+          autosave={settings?.autosaveMode}
+          keepSound={settings?.buttonSounds}
+          codeName={filename}
+          onResetScreen={handleScreenReset}
+          onResetCode={handleCodeReset}
+        />
 
-      <div className="h-[calc(100vh-7.5rem)] font-mono text-cream pt-2 px-4 bg-gray-950">
-        <PanelGroup
-          key={layoutKey}
-          direction="vertical"
-          autoSaveId="layout-vert"
-        >
-          <Panel defaultSize={60} minSize={20}>
-            <PanelGroup direction="horizontal" autoSaveId="layout-hor">
-              <Panel defaultSize={30} minSize={25} className="rounded ">
-                <EditorSection
-                  icon={<FaHtml5 className="text-red-500" />}
-                  title="HTML"
-                  value={htmlCode}
-                  onChange={setHtmlCode}
-                  extension={html()}
-                  settings={settings}
-                />
-              </Panel>
-              <PanelResizeHandle className="bg-primary/5 rounded-t-md flex justify-center items-center">
-                <GrDrag className="text-primary/80" />
-              </PanelResizeHandle>
-              <Panel defaultSize={30} minSize={25} className="rounded">
-                <EditorSection
-                  icon={<FaCss3Alt className="text-blue-500" />}
-                  title="CSS"
-                  value={cssCode}
-                  onChange={setCssCode}
-                  extension={css()}
-                  settings={settings}
-                />
-              </Panel>
-              <PanelResizeHandle className="bg-primary/5 rounded-t-md flex justify-center items-center">
-                <GrDrag className="text-primary/80" />
-              </PanelResizeHandle>
-              <Panel defaultSize={30} minSize={25} className=" rounded">
-                <EditorSection
-                  icon={<RiJavascriptFill className="text-yellow-500" />}
-                  title="JavaScript"
-                  value={jsCode}
-                  onChange={setJsCode}
-                  extension={javascript()}
-                  settings={settings}
-                />
-              </Panel>
-            </PanelGroup>
-          </Panel>
-          <PanelResizeHandle className="bg-primary/5 rounded-t-md flex justify-center items-center">
-            <GrDrag className="text-primary/80 transform rotate-90" />
-          </PanelResizeHandle>
-          <Panel defaultSize={40} minSize={20} className="bg-white">
-            <iframe
-              srcDoc={srcDoc}
-              title="Live Preview"
-              sandbox="allow-scripts"
-              className="w-full h-full border-0 bg-none"
-            />
-          </Panel>
-        </PanelGroup>
+        <div className="h-[calc(100vh-7.5rem)] font-mono text-cream pt-2 px-4 bg-gray-950">
+          <PanelGroup
+            key={layoutKey}
+            direction="vertical"
+            autoSaveId="layout-vert"
+          >
+            <Panel defaultSize={60} minSize={20}>
+              <PanelGroup direction="horizontal" autoSaveId="layout-hor">
+                <Panel defaultSize={30} minSize={25} className="rounded ">
+                  <EditorSection
+                    icon={<FaHtml5 className="text-red-500" />}
+                    title="HTML"
+                    value={htmlCode}
+                    onChange={setHtmlCode}
+                    extension={html()}
+                    settings={settings}
+                  />
+                </Panel>
+                <PanelResizeHandle className="bg-primary/5 rounded-t-md flex justify-center items-center">
+                  <GrDrag className="text-primary/80" />
+                </PanelResizeHandle>
+                <Panel defaultSize={30} minSize={25} className="rounded">
+                  <EditorSection
+                    icon={<FaCss3Alt className="text-blue-500" />}
+                    title="CSS"
+                    value={cssCode}
+                    onChange={setCssCode}
+                    extension={css()}
+                    settings={settings}
+                  />
+                </Panel>
+                <PanelResizeHandle className="bg-primary/5 rounded-t-md flex justify-center items-center">
+                  <GrDrag className="text-primary/80" />
+                </PanelResizeHandle>
+                <Panel defaultSize={30} minSize={25} className=" rounded">
+                  <EditorSection
+                    icon={<RiJavascriptFill className="text-yellow-500" />}
+                    title="JavaScript"
+                    value={jsCode}
+                    onChange={setJsCode}
+                    extension={javascript()}
+                    settings={settings}
+                  />
+                </Panel>
+              </PanelGroup>
+            </Panel>
+            <PanelResizeHandle className="bg-primary/5 rounded-t-md flex justify-center items-center">
+              <GrDrag className="text-primary/80 transform rotate-90" />
+            </PanelResizeHandle>
+            <Panel defaultSize={40} minSize={20} className="bg-white">
+              <iframe
+                srcDoc={srcDoc}
+                title="Live Preview"
+                sandbox="allow-scripts"
+                className="w-full h-full border-0 bg-none"
+              />
+            </Panel>
+          </PanelGroup>
+        </div>
       </div>
-    </div>
+    </Suspense>
   );
 }

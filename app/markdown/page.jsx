@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -11,6 +11,7 @@ import { useUserSettings } from "@/context/userSettingsContext";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { getMd, saveMd } from "@/actions/saveState";
+import { LuLoaderCircle } from "react-icons/lu";
 
 const DEFAULT_TEXT = `# Heading 1
 
@@ -173,78 +174,89 @@ const MarkdownPage = () => {
   };
 
   return (
-    <div>
-      <MarkdownHeader
-        autosave={settings?.autosaveMode}
-        keepSound={settings?.buttonSounds}
-        markdown={markdown}
-        codeName={filename}
-        setMarkdown={setMarkdown}
-        handleSave={handleSave}
-      />
-      <div className="py-4 px-6 grid grid-cols-2 gap-4 h-full w-full">
-        {/* Editor Section */}
-        <div className="flex flex-col bg-slate-900 rounded-xl h-[calc(100vh-9.5rem)] overflow-hidden border border-slate-700">
-          <div className="text-cream text-xl font-semibold p-3 pl-5 border-b border-slate-700">
-            Editor
-          </div>
-          <textarea
-            ref={textareaRef}
-            value={markdown}
-            spellCheck={false}
-            onChange={(e) => setMarkdown(e.target.value)}
-            onScroll={handleEditorScroll}
-            className="flex-1 bg-slate-900 text-blue-100 p-4 resize-none 
+    <Suspense
+      fallback={
+        <div className="flex justify-center items-center h-full w-full">
+          <LuLoaderCircle className="animate-spin mx-auto" size={35} />
+        </div>
+      }
+    >
+      <div>
+        <MarkdownHeader
+          autosave={settings?.autosaveMode}
+          keepSound={settings?.buttonSounds}
+          markdown={markdown}
+          codeName={filename}
+          setMarkdown={setMarkdown}
+          handleSave={handleSave}
+        />
+        <div className="py-4 px-6 grid grid-cols-2 gap-4 h-full w-full">
+          {/* Editor Section */}
+          <div className="flex flex-col bg-slate-900 rounded-xl h-[calc(100vh-9.5rem)] overflow-hidden border border-slate-700">
+            <div className="text-cream text-xl font-semibold p-3 pl-5 border-b border-slate-700">
+              Editor
+            </div>
+            <textarea
+              ref={textareaRef}
+              value={markdown}
+              spellCheck={false}
+              onChange={(e) => setMarkdown(e.target.value)}
+              onScroll={handleEditorScroll}
+              className="flex-1 bg-slate-900 text-blue-100 p-4 resize-none 
                      overflow-auto outline-none scrollbar-thin 
                      scrollbar-thumb-slate-700 scrollbar-track-slate-800"
-          />
-        </div>
-
-        {/* Preview Section */}
-        <div className="flex flex-col bg-slate-900 rounded-xl h-[calc(100vh-9.5rem)] overflow-hidden border border-slate-700">
-          <div className="text-cream text-xl font-semibold p-3 pl-5 border-b border-slate-700">
-            Preview
+            />
           </div>
-          <div
-            ref={previewRef}
-            onScroll={handlePreviewScroll}
-            className="markdown-body flex-1 p-4 overflow-auto 
+
+          {/* Preview Section */}
+          <div className="flex flex-col bg-slate-900 rounded-xl h-[calc(100vh-9.5rem)] overflow-hidden border border-slate-700">
+            <div className="text-cream text-xl font-semibold p-3 pl-5 border-b border-slate-700">
+              Preview
+            </div>
+            <div
+              ref={previewRef}
+              onScroll={handlePreviewScroll}
+              className="markdown-body flex-1 p-4 overflow-auto 
                      scrollbar-thin scrollbar-thumb-slate-700 
                      scrollbar-track-slate-800"
-          >
-            <Markdown
-              remarkPlugins={settings?.enableGFM ? [remarkGfm] : []}
-              components={{
-                code({ node, inline, className, children, ...props }) {
-                  const match = /language-(\w+)/.exec(className || "");
-
-                  if (!settings?.syntaxHighlighting || inline || !match) {
-                    return (
-                      <code className="text-amber-600 rounded px-1" {...props}>
-                        {children}
-                      </code>
-                    );
-                  }
-
-                  return (
-                    <SyntaxHighlighter
-                      style={oneDark}
-                      language={match[1]}
-                      PreTag="div"
-                      {...props}
-                    >
-                      {String(children).replace(/\n$/, "")}
-                    </SyntaxHighlighter>
-                  );
-                },
-              }}
             >
-              {markdown}
-            </Markdown>
+              <Markdown
+                remarkPlugins={settings?.enableGFM ? [remarkGfm] : []}
+                components={{
+                  code({ node, inline, className, children, ...props }) {
+                    const match = /language-(\w+)/.exec(className || "");
+
+                    if (!settings?.syntaxHighlighting || inline || !match) {
+                      return (
+                        <code
+                          className="text-amber-600 rounded px-1"
+                          {...props}
+                        >
+                          {children}
+                        </code>
+                      );
+                    }
+
+                    return (
+                      <SyntaxHighlighter
+                        style={oneDark}
+                        language={match[1]}
+                        PreTag="div"
+                        {...props}
+                      >
+                        {String(children).replace(/\n$/, "")}
+                      </SyntaxHighlighter>
+                    );
+                  },
+                }}
+              >
+                {markdown}
+              </Markdown>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </Suspense>
   );
 };
 
