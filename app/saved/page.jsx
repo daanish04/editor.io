@@ -7,7 +7,7 @@ import { FaFileCode } from "react-icons/fa";
 
 const SavedPage = () => {
   return (
-    <div className="text-cream px-6 py-12 flex flex-col items-center">
+    <div className="text-cream px-6 pt-12 flex flex-col items-center">
       <h2 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight lg:pb-3">
         Saved{" "}
         <span className="text-accent">
@@ -16,16 +16,16 @@ const SavedPage = () => {
       </h2>
       <section className="mt-20 px-4 grid grid-cols-1 md:grid-cols-2 lg:gap-10 gap-6 max-w-md lg:max-w-5xl md:max-w-2xl w-full">
         <RouteCard
-          Icon={AiFillFileMarkdown}
+          Icon={FaFileCode}
           title="Codes"
           desc="Access and manage your saved HTML, CSS, and JS code blocks."
           route="/saved/code"
         />
         <RouteCard
-          Icon={FaFileCode}
+          Icon={AiFillFileMarkdown}
           title="Markdowns"
           desc="View and organize your saved markdown documents and notes."
-          route="/saved/code"
+          route="/saved/markdown"
         />
       </section>
     </div>

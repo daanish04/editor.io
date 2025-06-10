@@ -184,3 +184,57 @@ export async function getMdList() {
     return { success: false, error: error.message };
   }
 }
+
+export async function deleteCode(id) {
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error("User is not authenticated");
+
+    const user = await db.user.findUnique({
+      where: { clerkId: userId },
+      include: { settings: true },
+    });
+    if (!user) throw new Error("User is not found");
+
+    const code = await db.code.findUnique({
+      where: { id, userId: user.id },
+    });
+    if (!code) throw new Error("Code is not found");
+
+    await db.code.delete({
+      where: { id, userId: user.id },
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting code", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function deleteMarkdown(id) {
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error("User is not authenticated");
+
+    const user = await db.user.findUnique({
+      where: { clerkId: userId },
+      include: { settings: true },
+    });
+    if (!user) throw new Error("User is not found");
+
+    const markdown = await db.markdown.findUnique({
+      where: { id, userId: user.id },
+    });
+    if (!markdown) throw new Error("Markdown is not found");
+
+    await db.markdown.delete({
+      where: { id, userId: user.id },
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting markdown", error);
+    return { success: false, error: error.message };
+  }
+}
