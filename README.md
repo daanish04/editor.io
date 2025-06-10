@@ -13,7 +13,7 @@ A modern in-browser **HTML/CSS/JS + Markdown** editor with live preview, theming
 * 🎨 Theme support for the editor (light/dark + more coming)
 * 💾 Autosave with toggle: save to `localStorage` or remote database
 * 👤 User authentication powered by Clerk
-* 📥 Import / 📤 Download code files
+* 📥 Import / 📤 Download markdown files
 
 ---
 
